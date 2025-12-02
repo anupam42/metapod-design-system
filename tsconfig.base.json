@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@metapod-design-system/colors": ["packages/colors/src/index.ts"],
+      "@metapod-design-system/docs": ["packages/docs/src/index.ts"],
+      "@metapod-design-system/icons": ["packages/icons/src/index.ts"],
+      "@metapod-design-system/kakuna": ["packages/kakuna/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
