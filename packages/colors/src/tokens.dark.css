@@ -1,13 +1,38 @@
-[data-theme="dark"] {
+:root.dark {
   --ds-surface-base: #18181b;
-  --ds-surface-hover: undefined;
-  --ds-surface-active: #3f3f46;
+  --ds-surface-raised: color.neutral.800;
+  --ds-surface-sunken: #3f3f46;
+  --ds-text-base: #fafafa;
+  --ds-text-subtle: color.neutral.200;
+  --ds-text-muted: color.neutral.300;
+  --ds-text-inverted: #18181b;
   --ds-border-subtle: #3f3f46;
-  --ds-border-base: undefined;
-  --ds-border-strong: undefined;
-  --ds-content-primary: #fafafa;
-  --ds-content-secondary: undefined;
-  --ds-content-disabled: undefined;
-  --ds-brand-primary: undefined;
-  --ds-brand-primaryHover: undefined;
+  --ds-border-base: color.neutral.600;
+  --ds-border-strong: color.neutral.500;
+  --ds-brand-primary: #5e8bff;
+  --ds-brand-primaryHover: #88acff;
+  --ds-brand-primaryActive: #b1caff;
+  --ds-brand-subtle: #102b8a;
+  --ds-accent-base: #fbbf24;
+  --ds-accent-hover: #fcd34d;
+  --ds-accent-active: #fde68a;
+  --ds-accent-subtle: #92400e;
+  --ds-success-base: #54c88f;
+  --ds-success-hover: #8addb3;
+  --ds-success-active: #b7edcf;
+  --ds-success-subtle: #0f4d31;
+  --ds-danger-base: #ff5a44;
+  --ds-danger-hover: #ff8a7a;
+  --ds-danger-active: #ffbdb4;
+  --ds-danger-subtle: #93190d;
+  --ds-warning-base: #fcd34d;
+  --ds-warning-hover: #fde68a;
+  --ds-warning-active: #fef3c7;
+  --ds-warning-subtle: #92400e;
+  --ds-info-base: #5ac2ff;
+  --ds-info-hover: #8bdbff;
+  --ds-info-active: #b9ecff;
+  --ds-info-subtle: #004d82;
+  --ds-focus-ring: #5e8bff;
+  --ds-focus-ringStrong: #88acff;
 }

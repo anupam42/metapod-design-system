@@ -1,80 +1,132 @@
-import fs from "fs";
-import path from "path";
-import * as ColorsModule from "./colors.ts";
-import { semanticTokens } from "./semantic-tokens.ts";
-import { darkThemeOverrides } from "./dark-theme.ts";
+import fs from 'fs';
+import path from 'path';
 
-const Colors = ColorsModule.Colors;
+// Import palettes + semantic system
+import { Colors } from "./colors.js";
+import { lightTheme } from "./light-theme.js";
+import { darkThemeOverrides } from "./dark-theme.js";
 
-const dist = path.join(process.cwd(), "src");
+// ---------- Helper: resolve "color.x.y" to HEX ----------
+function resolveColor(ref) {
+  if (!ref.startsWith("color.")) return ref;
 
-function resolveToken(ref) {
-  if (!ref.startsWith("color")) return ref;
+  // Extract: color.lucario.500
   const [, palette, shade] = ref.split(".");
-  return Colors[palette][shade];
+
+  return Colors[palette]?.[shade] ?? ref;
 }
 
-function flatten(obj, prefix = []) {
-  let out = {};
-  for (const key in obj) {
-    const value = obj[key];
-    const name = [...prefix, key];
+// ---------- Helper: flatten theme object ----------
+function flattenTheme(obj, prefix = "") {
+  let result = {};
 
-    if (typeof value === "string") {
-      out[name.join("-")] = resolveToken(value);
+  for (const key of Object.keys(obj)) {
+    const newKey = prefix ? `${prefix}-${key}` : key;
+
+    if (typeof obj[key] === "object") {
+      Object.assign(result, flattenTheme(obj[key], newKey));
     } else {
-      out = { ...out, ...flatten(value, name) };
+      result[newKey] = resolveColor(obj[key]);
     }
   }
-  return out;
+  return result;
 }
 
-// Palette variables
-const paletteVars = {};
-for (const [palette, shades] of Object.entries(Colors)) {
-  for (const [shade, hex] of Object.entries(shades)) {
-    paletteVars[`color-${palette}-${shade}`] = hex;
+// ---------- Generate Light Theme ----------
+function generateLightCSS() {
+  const flat = flattenTheme(lightTheme);
+
+  let css = `:root {\n`;
+  for (const key of Object.keys(flat)) {
+    css += `  --ds-${key}: ${flat[key]};\n`;
   }
+  css += `}\n`;
+
+  return css;
 }
 
-// Semantic variables
-const semanticVars = flatten(semanticTokens);
+// ---------- Generate Dark Theme ----------
+function generateDarkCSS() {
+  // merge light + dark overrides
+  const merged = JSON.parse(JSON.stringify(lightTheme));
 
-// Dark theme variables
-const darkVars = flatten(darkThemeOverrides);
+  function deepMerge(target, source) {
+    for (const key in source) {
+      if (typeof source[key] === "object") {
+        target[key] = deepMerge(target[key] ?? {}, source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
 
-// CSS Output
-const css = [
-  ":root {",
-  ...Object.entries({ ...paletteVars, ...semanticVars }).map(
-    ([k, v]) => `  --ds-${k}: ${v};`
-  ),
-  "}"
-].join("\n");
+  const finalDark = deepMerge(merged, darkThemeOverrides);
 
-const cssDark = [
-  `[data-theme="dark"] {`,
-  ...Object.entries(darkVars).map(
-    ([k, v]) => `  --ds-${k}: ${v};`
-  ),
-  "}"
-].join("\n");
+  const flat = flattenTheme(finalDark);
 
-fs.writeFileSync(path.join(dist, "tokens.css"), css);
-fs.writeFileSync(path.join(dist, "tokens.dark.css"), cssDark);
+  let css = `:root.dark {\n`;
+  for (const key of Object.keys(flat)) {
+    css += `  --ds-${key}: ${flat[key]};\n`;
+  }
+  css += `}\n`;
 
-// SCSS Output
-const scss = Object.entries({ ...paletteVars, ...semanticVars })
-  .map(([k, v]) => `$ds-${k}: ${v};`)
-  .join("\n");
+  return css;
+}
 
-fs.writeFileSync(path.join(dist, "tokens.scss"), scss);
+//------------------------------------------------------------
+// SCSS GENERATION
+//------------------------------------------------------------
 
-// TS Output
-const ts = Object.entries({ ...paletteVars, ...semanticVars })
-  .map(([k, v]) => `export const DS_${k.replace(/-/g, "_").toUpperCase()} = "${v}";`)
-  .join("\n");
+function generateLightSCSS() {
+  const flat = flattenTheme(lightTheme);
 
-fs.writeFileSync(path.join(dist, "tokens.ts"), ts);
+  let scss = `$ds-light-theme: (\n`;
+  for (const key of Object.keys(flat)) {
+    scss += `  "${key}": ${flat[key]},\n`;
+  }
+  scss += `);\n`;
 
-console.log("✔ Tokens generated successfully!");
+  return scss;
+}
+
+function generateDarkSCSS() {
+  // merge light + override
+  const merged = JSON.parse(JSON.stringify(lightTheme));
+
+  function deepMerge(target, source) {
+    for (const key in source) {
+      if (typeof source[key] === "object") {
+        target[key] = deepMerge(target[key] ?? {}, source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
+
+  const finalDark = deepMerge(merged, darkThemeOverrides);
+
+  const flat = flattenTheme(finalDark);
+
+  let scss = `$ds-dark-theme: (\n`;
+  for (const key of Object.keys(flat)) {
+    scss += `  "${key}": ${flat[key]},\n`;
+  }
+  scss += `);\n`;
+
+  return scss;
+}
+
+// Write SCSS files
+fs.writeFileSync(path.join("src", "tokens.light.scss"), generateLightSCSS());
+fs.writeFileSync(path.join("src", "tokens.dark.scss"), generateDarkSCSS());
+
+// ---------- Write output files ----------
+const outLight = path.join("src", "tokens.light.css");
+const outDark  = path.join("src", "tokens.dark.css");
+
+fs.writeFileSync(outLight, generateLightCSS());
+fs.writeFileSync(outDark, generateDarkCSS());
+
+console.log("✔ tokens.light.css + tokens.dark.css generated!");
