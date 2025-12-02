@@ -1,0 +1,13 @@
+[data-theme="dark"] {
+  --ds-surface-base: #18181b;
+  --ds-surface-hover: undefined;
+  --ds-surface-active: #3f3f46;
+  --ds-border-subtle: #3f3f46;
+  --ds-border-base: undefined;
+  --ds-border-strong: undefined;
+  --ds-content-primary: #fafafa;
+  --ds-content-secondary: undefined;
+  --ds-content-disabled: undefined;
+  --ds-brand-primary: undefined;
+  --ds-brand-primaryHover: undefined;
+}

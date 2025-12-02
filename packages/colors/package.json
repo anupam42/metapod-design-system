@@ -1,14 +1,9 @@
 {
   "name": "@design-system/colors",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/colors/src",
-  "projectType": "library",
-  "targets": {
-    "build:tokens": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npm run --workspace=@design-system/colors build:tokens"
-      }
-    }
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build:tokens": "tsx ./src/build-tokens.mjs"
   }
 }

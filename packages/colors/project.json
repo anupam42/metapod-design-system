@@ -1,20 +1,20 @@
 {
-  "name": "colors",
+  "name": "@design-system/colors",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/colors/src",
-  "prefix": "lib",
   "projectType": "library",
-  "tags": [],
   "targets": {
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+    "lint": {
+      "executor": "@nx/eslint:lint",
       "options": {
-        "jestConfig": "packages/colors/jest.config.ts"
+        "lintFilePatterns": ["packages/colors/**/*.ts"]
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint"
+    "build:tokens": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run --workspace=@design-system/colors build:tokens"
+      }
     }
   }
 }
