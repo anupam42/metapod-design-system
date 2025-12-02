@@ -2,7 +2,9 @@
   "name": "@metapod-design-system/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev:kakuna": "nx run kakuna:storybook --port=6000"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~18.2.0",

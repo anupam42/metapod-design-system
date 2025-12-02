@@ -1,1 +1,1 @@
-export * from './lib/kakuna/kakuna.component';
+export * from './theme/index';
