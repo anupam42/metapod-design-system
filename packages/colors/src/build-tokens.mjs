@@ -74,6 +74,15 @@ function generateDarkCSS() {
   return css;
 }
 
+// ---------- Write output files ----------
+const outLight = path.join("src", "tokens.light.css");
+const outDark  = path.join("src", "tokens.dark.css");
+
+fs.writeFileSync(outLight, generateLightCSS());
+fs.writeFileSync(outDark, generateDarkCSS());
+
+console.log("✔ tokens.light.css + tokens.dark.css generated!");
+
 //------------------------------------------------------------
 // SCSS GENERATION
 //------------------------------------------------------------
@@ -122,11 +131,3 @@ function generateDarkSCSS() {
 fs.writeFileSync(path.join("src", "tokens.light.scss"), generateLightSCSS());
 fs.writeFileSync(path.join("src", "tokens.dark.scss"), generateDarkSCSS());
 
-// ---------- Write output files ----------
-const outLight = path.join("src", "tokens.light.css");
-const outDark  = path.join("src", "tokens.dark.css");
-
-fs.writeFileSync(outLight, generateLightCSS());
-fs.writeFileSync(outDark, generateDarkCSS());
-
-console.log("✔ tokens.light.css + tokens.dark.css generated!");
